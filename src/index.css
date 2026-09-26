@@ -1,17 +1,34 @@
 @import "tailwindcss";
 
+@theme {
+  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Italiana', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --color-brand-brown: #1E0F0A;
+  --color-brand-chilli: #7D2418;
+  --color-brand-turmeric: #D69B2D;
+  --color-brand-ivory: #F3EBDD;
+  --color-brand-green: #1F3325;
+}
+
 @layer base {
   :root {
-    --font-serif: 'Cormorant Garamond', Georgia, serif;
-    --font-display: 'Italiana', 'Cormorant Garamond', Georgia, serif;
+    --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+    --font-display: 'Italiana', 'Playfair Display', Georgia, serif;
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    
+    --brand-brown: #1E0F0A;
+    --brand-chilli: #7D2418;
+    --brand-turmeric: #D69B2D;
+    --brand-ivory: #F3EBDD;
+    --brand-green: #1F3325;
   }
 
   html {
     scroll-behavior: smooth;
     font-family: var(--font-sans);
-    background-color: #FAF7F2;
-    color: #241E1A;
+    background-color: #F3EBDD;
+    color: #1E0F0A;
   }
 
   h1, h2, h3, .font-serif {
@@ -30,20 +47,20 @@
 
 /* Custom scrollbar for editorial elegance */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FAF7F2;
+  background: #F3EBDD;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CFC4B5;
+  background: #D69B2D;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8B1E13;
+  background: #7D2418;
 }
 
 /* Editorial underline animation */
@@ -58,43 +75,20 @@
   bottom: -2px;
   left: 0;
   background-color: currentColor;
-  transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .hover-underline-editorial:hover::after {
   width: 100%;
 }
 
-/* Subtle infinite marquee for oversized typography */
-@keyframes marqueeSlow {
-  0% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+/* Text stroke for dramatic oversized typography */
+.text-outline {
+  -webkit-text-stroke: 1px rgba(30, 15, 10, 0.25);
+  color: transparent;
 }
 
-.animate-marquee-slow {
-  display: flex;
-  width: 200%;
-  animation: marqueeSlow 32s linear infinite;
-}
-
-.animate-marquee-slow:hover {
-  animation-play-state: paused;
-}
-
-/* Subtle float animations */
-@keyframes subtleFloat {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-6px) rotate(0.8deg);
-  }
-}
-
-.animate-subtle-float {
-  animation: subtleFloat 7s ease-in-out infinite;
+.text-outline-light {
+  -webkit-text-stroke: 1px rgba(243, 235, 221, 0.28);
+  color: transparent;
 }
 

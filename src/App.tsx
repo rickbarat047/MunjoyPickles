@@ -9,17 +9,16 @@ import { CartProvider } from './context/CartContext';
 import { Preloader } from './components/Preloader';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { BrandIntro } from './components/BrandIntro';
-import { FlagshipPickleStory } from './components/FlagshipPickleStory';
-import { TheStory } from './components/TheStory';
-import { InteractiveIngredients } from './components/InteractiveIngredients';
-import { ProcessSection } from './components/ProcessSection';
-import { ProductShowcase } from './components/ProductShowcase';
-import { HeritageTradition } from './components/HeritageTradition';
-import { JournalSection } from './components/JournalSection';
-import { Testimonials } from './components/Testimonials';
-import { InstagramGrid } from './components/InstagramGrid';
-import { FinalCTA } from './components/FinalCTA';
+import { BrandStatement } from './components/BrandStatement';
+import { TheIngredient } from './components/TheIngredient';
+import { ProcessDocumentary } from './components/ProcessDocumentary';
+import { FlagshipHero } from './components/FlagshipHero';
+import { EditorialCollection } from './components/EditorialCollection';
+import { HeritageArchive } from './components/HeritageArchive';
+import { TheTable } from './components/TheTable';
+import { JournalEditorial } from './components/JournalEditorial';
+import { MinimalSocialProof } from './components/MinimalSocialProof';
+import { GrandFinale } from './components/GrandFinale';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 
@@ -38,8 +37,8 @@ const luxuryEase = [0.22, 1, 0.36, 1] as const;
 const pageVariants = {
   initial: {
     opacity: 0,
-    scale: 0.98,
-    y: 14,
+    scale: 0.985,
+    y: 12,
     filter: 'blur(3px)',
   },
   animate: {
@@ -48,23 +47,23 @@ const pageVariants = {
     y: 0,
     filter: 'blur(0px)',
     transition: {
-      duration: 0.55,
+      duration: 0.6,
       ease: luxuryEase,
     },
   },
   exit: {
     opacity: 0,
-    scale: 0.98,
-    y: -14,
+    scale: 0.985,
+    y: -12,
     filter: 'blur(3px)',
     transition: {
-      duration: 0.38,
+      duration: 0.4,
       ease: luxuryEase,
     },
   },
 };
 
-type ActiveView = 'home' | 'pickles' | 'story' | 'craft' | 'journal' | 'contact';
+type ActiveView = 'home' | 'collection' | 'statement' | 'process' | 'journal' | 'contact';
 
 function MainApp() {
   const [activeView, setActiveView] = useState<ActiveView>('home');
@@ -73,14 +72,14 @@ function MainApp() {
 
   const handleNavigate = (sectionId: string) => {
     // If it's a specific page tab request or anchor navigation:
-    if (['pickles', 'story', 'craft', 'journal', 'contact'].includes(sectionId)) {
+    if (['collection', 'statement', 'process', 'journal', 'contact'].includes(sectionId)) {
       setActiveView(sectionId as ActiveView);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (sectionId === 'home') {
       setActiveView('home');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // If currently on another view, return to home and scroll to that section
+      // Return to home and scroll to section
       if (activeView !== 'home') {
         setActiveView('home');
         setTimeout(() => {
@@ -95,23 +94,23 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#241E1A] flex flex-col font-sans selection:bg-[#8B1E13] selection:text-[#FAF7F2] overflow-x-hidden">
+    <div className="min-h-screen bg-[#F3EBDD] text-[#1E0F0A] flex flex-col font-sans selection:bg-[#7D2418] selection:text-[#F3EBDD] overflow-x-hidden">
       {/* Luxury Brand Preloader Entrance */}
       <Preloader />
 
-      {/* Cinematic Route Change Progress Bar */}
+      {/* Cinematic Route Change Hairline Indicator */}
       <motion.div
         key={`nav-line-${activeView}`}
         initial={{ scaleX: 0, opacity: 0.9 }}
         animate={{ scaleX: 1, opacity: 0 }}
-        transition={{ duration: 0.6, ease: luxuryEase }}
-        className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-[#8B1E13] via-[#D97706] to-[#8B1E13] origin-left z-50 pointer-events-none"
+        transition={{ duration: 0.65, ease: luxuryEase }}
+        className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-[#7D2418] via-[#D69B2D] to-[#7D2418] origin-left z-50 pointer-events-none"
       />
 
-      {/* Sticky Luxury Navigation */}
+      {/* Minimal Floating Luxury Navigation */}
       <Navbar onNavigate={handleNavigate} activeView={activeView} />
 
-      {/* Animated Page Layout Container with AnimatePresence */}
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col relative w-full">
         <AnimatePresence mode="wait">
           {activeView === 'home' && (
@@ -124,141 +123,149 @@ function MainApp() {
               exit="exit"
               className="flex-1 w-full"
             >
-              {/* 1. Full-Viewport Cinematic Hero */}
+              {/* SECTION 1: HERO — THE MONEY SHOT */}
               <Hero
-                onExploreClick={() => handleNavigate('pickles')}
-                onStoryClick={() => handleNavigate('story')}
+                onExploreClick={() => {
+                  const el = document.getElementById('collection');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                onStoryClick={() => {
+                  const el = document.getElementById('statement');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
               />
 
-              {/* 2. Editorial Transition: SOME FLAVOURS TAKE YOU HOME */}
-              <BrandIntro />
+              {/* SECTION 2: THE STATEMENT */}
+              <BrandStatement />
 
-              {/* 3. The Flagship Product Story: MANGO. MUSTARD. MEMORIES. */}
-              <FlagshipPickleStory />
+              {/* SECTION 3: THE INGREDIENT (MANGO, MUSTARD, CHILLI) */}
+              <TheIngredient />
 
-              {/* 4. The Story: Made the Way Memories are Made */}
-              <TheStory />
+              {/* SECTION 4: THE MUNJOY PROCESS (STICKY 01-05 DOCUMENTARY) */}
+              <ProcessDocumentary />
 
-              {/* 5. Interactive Culinary Ingredients Showcase */}
-              <InteractiveIngredients />
+              {/* SECTION 5: FLAGSHIP PRODUCT (MANGO PICKLE VIEWPORT) */}
+              <FlagshipHero />
 
-              {/* 6. The 5-Step Craft: From Harvest to Jar */}
-              <ProcessSection />
+              {/* SECTION 6: PRODUCT COLLECTION (ASYMMETRIC EDITORIAL) */}
+              <EditorialCollection onOpenDetail={(p) => setSelectedProduct(p)} />
 
-              {/* 7. Asymmetrical Editorial Product Collection */}
-              <ProductShowcase onOpenDetail={(p) => setSelectedProduct(p)} />
+              {/* SECTION 7: HERITAGE (INDIAN KITCHEN TEXTURES & FOLKLORE) */}
+              <HeritageArchive />
 
-              {/* 8. Indian Heritage, Terrace Sun-Curing & Folklore */}
-              <HeritageTradition />
+              {/* SECTION 8: THE TABLE (EVERYDAY MEALS & OVERLAID TYPOGRAPHY) */}
+              <TheTable />
 
-              {/* 9. The Munjoy Journal */}
-              <JournalSection />
+              {/* SECTION 9: JOURNAL (MAGAZINE-STYLE MONOGRAPH) */}
+              <JournalEditorial />
 
-              {/* 10. Refined Patron Reflections */}
-              <Testimonials />
+              {/* SECTION 10: SOCIAL PROOF (ONE MINIMAL CUSTOMER QUOTE) */}
+              <MinimalSocialProof />
 
-              {/* 11. Editorial Instagram Photo Wall */}
-              <InstagramGrid />
+              {/* FINAL SECTION: BRING JOY TO THE TABLE */}
+              <GrandFinale
+                onShopClick={() => {
+                  const el = document.getElementById('collection');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                onContactClick={() => {
+                  const el = document.getElementById('contact');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
 
-              {/* 12. The Grand Finale Invitation */}
-              <FinalCTA onShopClick={() => handleNavigate('pickles')} />
-
-              {/* 13. Direct Kitchen Contact & Bespoke Gifting */}
+              {/* KITCHEN CONTACT & BESPOKE GIFTING (CONNECTED TO rickbarat21@gmail.com) */}
               <ContactSection />
             </motion.main>
           )}
 
-          {activeView === 'pickles' && (
+          {activeView === 'collection' && (
             <motion.main
-              key="view-pickles"
+              key="view-collection"
               layout="position"
               variants={pageVariants}
               initial="initial"
               animate="animate"
               exit="exit"
-              className="flex-1 w-full pt-20"
+              className="flex-1 w-full pt-24"
             >
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 border-b border-[#E8DFD5] flex items-center justify-between">
+              <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-8 pb-6 border-b border-[#1E0F0A]/15 flex items-center justify-between">
                 <div>
                   <motion.button
                     whileHover={{ x: -4 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleNavigate('home')}
-                    className="text-xs uppercase tracking-widest text-[#8B1E13] font-semibold hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
+                    className="text-xs uppercase font-mono tracking-widest text-[#7D2418] hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
                   >
-                    ← Return to Home Overview
+                    ← Return to Overview
                   </motion.button>
-                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#241E1A]">
-                    The Complete Pantry Collection
+                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1E0F0A]">
+                    The Pantry Archive
                   </h1>
                 </div>
               </div>
-              <ProductShowcase onOpenDetail={(p) => setSelectedProduct(p)} />
-              <FlagshipPickleStory />
-              <FinalCTA onShopClick={() => handleNavigate('pickles')} />
+              <EditorialCollection onOpenDetail={(p) => setSelectedProduct(p)} />
+              <FlagshipHero />
             </motion.main>
           )}
 
-          {activeView === 'story' && (
+          {activeView === 'statement' && (
             <motion.main
-              key="view-story"
+              key="view-statement"
               layout="position"
               variants={pageVariants}
               initial="initial"
               animate="animate"
               exit="exit"
-              className="flex-1 w-full pt-20"
+              className="flex-1 w-full pt-24"
             >
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 border-b border-[#E8DFD5] flex items-center justify-between">
+              <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-8 pb-6 border-b border-[#1E0F0A]/15 flex items-center justify-between">
                 <div>
                   <motion.button
                     whileHover={{ x: -4 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleNavigate('home')}
-                    className="text-xs uppercase tracking-widest text-[#8B1E13] font-semibold hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
+                    className="text-xs uppercase font-mono tracking-widest text-[#7D2418] hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
                   >
-                    ← Return to Home Overview
+                    ← Return to Overview
                   </motion.button>
-                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#241E1A]">
-                    Our Story & Philosophy
+                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1E0F0A]">
+                    Philosophy & Memory
                   </h1>
                 </div>
               </div>
-              <BrandIntro />
-              <TheStory />
-              <HeritageTradition />
-              <FinalCTA onShopClick={() => handleNavigate('pickles')} />
+              <BrandStatement />
+              <HeritageArchive />
             </motion.main>
           )}
 
-          {activeView === 'craft' && (
+          {activeView === 'process' && (
             <motion.main
-              key="view-craft"
+              key="view-process"
               layout="position"
               variants={pageVariants}
               initial="initial"
               animate="animate"
               exit="exit"
-              className="flex-1 w-full pt-20"
+              className="flex-1 w-full pt-24"
             >
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 border-b border-[#E8DFD5] flex items-center justify-between">
+              <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-8 pb-6 border-b border-[#1E0F0A]/15 flex items-center justify-between">
                 <div>
                   <motion.button
                     whileHover={{ x: -4 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleNavigate('home')}
-                    className="text-xs uppercase tracking-widest text-[#8B1E13] font-semibold hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
+                    className="text-xs uppercase font-mono tracking-widest text-[#7D2418] hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
                   >
-                    ← Return to Home Overview
+                    ← Return to Overview
                   </motion.button>
-                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#241E1A]">
-                    The 5-Step Discipline & Ingredients
+                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1E0F0A]">
+                    The 5-Step Craft
                   </h1>
                 </div>
               </div>
-              <ProcessSection />
-              <InteractiveIngredients />
-              <FinalCTA onShopClick={() => handleNavigate('pickles')} />
+              <ProcessDocumentary />
+              <TheIngredient />
             </motion.main>
           )}
 
@@ -270,25 +277,24 @@ function MainApp() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="flex-1 w-full pt-20"
+              className="flex-1 w-full pt-24"
             >
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 border-b border-[#E8DFD5] flex items-center justify-between">
+              <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-8 pb-6 border-b border-[#1E0F0A]/15 flex items-center justify-between">
                 <div>
                   <motion.button
                     whileHover={{ x: -4 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleNavigate('home')}
-                    className="text-xs uppercase tracking-widest text-[#8B1E13] font-semibold hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
+                    className="text-xs uppercase font-mono tracking-widest text-[#7D2418] hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
                   >
-                    ← Return to Home Overview
+                    ← Return to Overview
                   </motion.button>
-                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#241E1A]">
-                    The Munjoy Journal & Archive
+                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1E0F0A]">
+                    The Munjoy Journal
                   </h1>
                 </div>
               </div>
-              <JournalSection />
-              <InstagramGrid />
+              <JournalEditorial />
             </motion.main>
           )}
 
@@ -300,20 +306,20 @@ function MainApp() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="flex-1 w-full pt-20"
+              className="flex-1 w-full pt-24"
             >
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 border-b border-[#E8DFD5] flex items-center justify-between">
+              <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-8 pb-6 border-b border-[#1E0F0A]/15 flex items-center justify-between">
                 <div>
                   <motion.button
                     whileHover={{ x: -4 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleNavigate('home')}
-                    className="text-xs uppercase tracking-widest text-[#8B1E13] font-semibold hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
+                    className="text-xs uppercase font-mono tracking-widest text-[#7D2418] hover:underline mb-2 inline-flex items-center gap-1 cursor-pointer"
                   >
-                    ← Return to Home Overview
+                    ← Return to Overview
                   </motion.button>
-                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#241E1A]">
-                    Connect With Our Kitchen
+                  <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1E0F0A]">
+                    Direct Kitchen Contact
                   </h1>
                 </div>
               </div>
@@ -323,7 +329,7 @@ function MainApp() {
         </AnimatePresence>
       </div>
 
-      {/* Luxury Footer */}
+      {/* Luxury Editorial Footer */}
       <Footer
         onNavigate={handleNavigate}
         onOpenOwnerPortal={() => setIsOwnerPortalOpen(true)}
@@ -341,12 +347,14 @@ function MainApp() {
 
       <CartDrawer />
 
+      {/* Checkout Modal (Triggers email to rickbarat21@gmail.com on order) */}
       <CheckoutModal />
 
       <SearchModal
         onSelectProduct={(p) => setSelectedProduct(p)}
       />
 
+      {/* Kitchen Orders Portal for Rick */}
       <OwnerOrdersModal
         isOpen={isOwnerPortalOpen}
         onClose={() => setIsOwnerPortalOpen(false)}
@@ -364,4 +372,3 @@ export default function App() {
     </CartProvider>
   );
 }
-

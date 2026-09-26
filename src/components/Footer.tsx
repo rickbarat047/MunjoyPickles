@@ -20,21 +20,21 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal })
   };
 
   return (
-    <footer className="bg-[#140F0D] text-[#FAF7F2] pt-24 pb-14 border-t border-[#291F1A]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-[#140A07] text-[#F3EBDD] pt-24 pb-14 border-t border-[#F3EBDD]/15">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
         
         {/* Main Footer Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 pb-16 border-b border-[#291F1A]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 pb-16 border-b border-[#F3EBDD]/15">
           
           {/* Brand Column (4 cols) */}
           <div className="lg:col-span-4 space-y-5">
-            <span className="font-serif text-3xl sm:text-4xl font-bold tracking-[0.22em] text-[#FAF7F2] uppercase block">
+            <span className="font-serif text-3xl sm:text-4xl font-bold tracking-[0.28em] text-[#F3EBDD] uppercase block">
               MUNJOY
             </span>
-            <p className="text-xs sm:text-sm text-[#A89A8E] leading-relaxed max-w-sm">
+            <p className="text-xs sm:text-sm text-[#F3EBDD]/70 leading-relaxed max-w-sm font-light">
               Traditional Indian pickle-making, crafted with care and made for today’s generation. Small-batch recipes prepared with sun-cured seasonal produce and virgin cold-pressed oils.
             </p>
-            <div className="pt-2 flex items-center gap-3 text-xs text-[#8A7768] font-mono">
+            <div className="pt-2 flex items-center gap-3 text-xs text-[#D69B2D] font-mono">
               <span>Handcrafted in India</span>
               <span>·</span>
               <span>Est. Family Tradition</span>
@@ -43,15 +43,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal })
 
           {/* Quick Navigation (3 cols) */}
           <div className="lg:col-span-3 space-y-4">
-            <span className="text-xs uppercase tracking-[0.25em] text-[#D97706] font-semibold block">
+            <span className="text-xs uppercase tracking-[0.25em] text-[#D69B2D] font-mono font-semibold block">
               Navigation
             </span>
-            <ul className="space-y-2.5 text-xs text-[#D4C9BC]">
+            <ul className="space-y-2.5 text-xs font-mono tracking-wider text-[#F3EBDD]/75">
               <li>
                 <button
                   type="button"
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="hover:text-[#FAF7F2] transition-colors cursor-pointer"
+                  className="hover:text-[#D69B2D] transition-colors cursor-pointer"
                 >
                   Return to Top
                 </button>
@@ -59,44 +59,26 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal })
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('story')}
-                  className="hover:text-[#FAF7F2] transition-colors cursor-pointer"
+                  onClick={() => onNavigate('statement')}
+                  className="hover:text-[#D69B2D] transition-colors cursor-pointer"
                 >
-                  Our Philosophy & Story
+                  Our Philosophy
                 </button>
               </li>
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('flagship')}
-                  className="hover:text-[#FAF7F2] transition-colors cursor-pointer"
+                  onClick={() => onNavigate('ingredient')}
+                  className="hover:text-[#D69B2D] transition-colors cursor-pointer"
                 >
-                  Flagship Mango Pickle Story
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('pickles')}
-                  className="hover:text-[#FAF7F2] transition-colors cursor-pointer"
-                >
-                  The Pickle Pantry Collection
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => onNavigate('ingredients')}
-                  className="hover:text-[#FAF7F2] transition-colors cursor-pointer"
-                >
-                  Interactive Ingredients
+                  Hero Ingredients
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => onNavigate('process')}
-                  className="hover:text-[#FAF7F2] transition-colors cursor-pointer"
+                  className="hover:text-[#D69B2D] transition-colors cursor-pointer"
                 >
                   The 5-Step Craft
                 </button>
@@ -104,37 +86,55 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal })
               <li>
                 <button
                   type="button"
-                  onClick={() => onNavigate('heritage')}
-                  className="hover:text-[#FAF7F2] transition-colors cursor-pointer"
+                  onClick={() => onNavigate('flagship')}
+                  className="hover:text-[#D69B2D] transition-colors cursor-pointer"
                 >
-                  Indian Heritage & Folklore
+                  Flagship Mango Pickle
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('collection')}
+                  className="hover:text-[#D69B2D] transition-colors cursor-pointer"
+                >
+                  Pantry Archive
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => onNavigate('table')}
+                  className="hover:text-[#D69B2D] transition-colors cursor-pointer"
+                >
+                  The Table
                 </button>
               </li>
               <li>
                 <button
                   type="button"
                   onClick={() => onNavigate('journal')}
-                  className="hover:text-[#FAF7F2] transition-colors cursor-pointer"
+                  className="hover:text-[#D69B2D] transition-colors cursor-pointer"
                 >
-                  The Munjoy Journal
+                  The Journal
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Customer Care (2 cols) */}
+          {/* Customer Care & Assurance (2 cols) */}
           <div className="lg:col-span-2 space-y-4">
-            <span className="text-xs uppercase tracking-[0.25em] text-[#D97706] font-semibold block">
+            <span className="text-xs uppercase tracking-[0.25em] text-[#D69B2D] font-mono font-semibold block">
               Assurance
             </span>
-            <ul className="space-y-2.5 text-xs text-[#A89A8E]">
+            <ul className="space-y-2.5 text-xs text-[#F3EBDD]/70 font-mono tracking-wider">
               <li>
                 <button
                   type="button"
                   onClick={() => onNavigate('contact')}
-                  className="hover:text-[#FAF7F2] transition-colors cursor-pointer"
+                  className="hover:text-[#D69B2D] transition-colors cursor-pointer text-left"
                 >
-                  Direct Kitchen Contact
+                  Kitchen Contact
                 </button>
               </li>
               <li>
@@ -150,13 +150,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal })
                 <span>Wholesale & Cafe Partner</span>
               </li>
               {onOpenOwnerPortal && (
-                <li className="pt-2">
+                <li className="pt-3">
                   <button
                     type="button"
                     onClick={onOpenOwnerPortal}
-                    className="text-[#D97706] hover:text-[#FAF7F2] transition-colors cursor-pointer flex items-center gap-1.5 font-semibold text-[11px]"
+                    className="text-[#D69B2D] hover:text-[#F3EBDD] transition-colors cursor-pointer flex items-center gap-1.5 font-semibold text-[11px]"
                   >
-                    <ShieldCheck className="w-3.5 h-3.5 text-[#8B1E13]" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#D69B2D]" />
                     <span>Kitchen Orders Portal</span>
                   </button>
                 </li>
@@ -166,15 +166,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal })
 
           {/* Newsletter Column (3 cols) */}
           <div className="lg:col-span-3 space-y-4">
-            <span className="text-xs uppercase tracking-[0.25em] text-[#D97706] font-semibold block">
-              The Table Dispatch
+            <span className="text-xs uppercase tracking-[0.25em] text-[#D69B2D] font-mono font-semibold block">
+              The Batch Dispatch
             </span>
-            <p className="text-xs text-[#D4C9BC] leading-relaxed">
+            <p className="text-xs text-[#F3EBDD]/70 leading-relaxed font-light">
               Receive seasonal harvest batch notifications and culinary stories from our terrace kitchen.
             </p>
 
             {subscribed ? (
-              <div className="p-3 bg-[#1F1813] border border-[#15803D]/50 text-xs text-[#15803D] flex items-center gap-2">
+              <div className="p-3 bg-[#1E0F0A] border border-[#D69B2D]/40 text-xs text-[#D69B2D] flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>You are subscribed to the table.</span>
               </div>
@@ -186,23 +186,23 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal })
                   placeholder="Enter email for batch alerts"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-[#201814] border border-[#3D2E24] text-xs text-[#FAF7F2] placeholder-[#7A6B5F] focus:outline-hidden focus:border-[#D97706]"
+                  className="w-full px-3.5 py-2.5 bg-[#1E0F0A] border border-[#F3EBDD]/20 text-xs text-[#F3EBDD] placeholder-[#F3EBDD]/40 focus:outline-hidden focus:border-[#D69B2D]"
                 />
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-[#8B1E13] hover:bg-[#A32216] text-[#FAF7F2] text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer"
+                  className="w-full py-2.5 bg-[#7D2418] hover:bg-[#992C1E] text-[#F3EBDD] text-xs uppercase tracking-wider font-semibold transition-colors cursor-pointer font-mono"
                 >
-                  Subscribe
+                  Subscribe to Dispatch
                 </button>
               </form>
             )}
 
-            <div className="flex items-center gap-4 pt-2 text-[#A89A8E]">
+            <div className="flex items-center gap-4 pt-2 text-[#F3EBDD]/60">
               <a
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[#FAF7F2] transition-colors"
+                className="hover:text-[#F3EBDD] transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="w-4 h-4" />
@@ -211,7 +211,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal })
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[#FAF7F2] transition-colors"
+                className="hover:text-[#F3EBDD] transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook className="w-4 h-4" />
@@ -222,7 +222,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal })
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#7A6B5F] font-mono">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F3EBDD]/50 font-mono">
           <div>
             © {new Date().getFullYear()} MUNJOY Artisanal Foods. All rights reserved.
           </div>

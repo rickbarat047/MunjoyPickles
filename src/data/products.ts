@@ -7,8 +7,21 @@ import craftImg from '../assets/images/craft_sundrying_spices_1790438200269.jpg'
 import flagshipMacroImg from '../assets/images/flagship_mango_macro_1790438585195.jpg';
 import kitchenHeritageImg from '../assets/images/kitchen_heritage_light_1790438598874.jpg';
 import tableSpreadImg from '../assets/images/table_pairing_spread_1790438612173.jpg';
+import mustardMacroImg from '../assets/images/macro_mustard_seeds_1790444382949.jpg';
+import chilliMacroImg from '../assets/images/macro_sun_chillies_1790444398895.jpg';
 
-export { flagshipMacroImg, kitchenHeritageImg, tableSpreadImg };
+export {
+  heroImg,
+  mangoImg,
+  chilliImg,
+  limeImg,
+  craftImg,
+  flagshipMacroImg,
+  kitchenHeritageImg,
+  tableSpreadImg,
+  mustardMacroImg,
+  chilliMacroImg,
+};
 
 export const PRODUCTS: Product[] = [
   {
