@@ -1,0 +1,6 @@
+{
+  "name": "MUNJOY — Artisanal Indian Pickles",
+  "description": "Authentic homemade Indian pickles crafted in small batches with traditional recipes, sun-dried spices, and cold-pressed oils.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
