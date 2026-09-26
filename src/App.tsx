@@ -28,6 +28,7 @@ import { QuickViewModal } from './components/QuickViewModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { SearchModal } from './components/SearchModal';
+import { OwnerOrdersModal } from './components/OwnerOrdersModal';
 import { Toast } from './components/Toast';
 import { Product } from './types';
 
@@ -68,6 +69,7 @@ type ActiveView = 'home' | 'pickles' | 'story' | 'craft' | 'journal' | 'contact'
 function MainApp() {
   const [activeView, setActiveView] = useState<ActiveView>('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isOwnerPortalOpen, setIsOwnerPortalOpen] = useState(false);
 
   const handleNavigate = (sectionId: string) => {
     // If it's a specific page tab request or anchor navigation:
@@ -322,7 +324,10 @@ function MainApp() {
       </div>
 
       {/* Luxury Footer */}
-      <Footer onNavigate={handleNavigate} />
+      <Footer
+        onNavigate={handleNavigate}
+        onOpenOwnerPortal={() => setIsOwnerPortalOpen(true)}
+      />
 
       {/* Interactive Overlays & Modals */}
       <ProductDetailModal
@@ -340,6 +345,11 @@ function MainApp() {
 
       <SearchModal
         onSelectProduct={(p) => setSelectedProduct(p)}
+      />
+
+      <OwnerOrdersModal
+        isOpen={isOwnerPortalOpen}
+        onClose={() => setIsOwnerPortalOpen(false)}
       />
 
       <Toast />

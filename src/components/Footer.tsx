@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { ArrowRight, CheckCircle2, Instagram, Facebook } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Instagram, Facebook, ShieldCheck } from 'lucide-react';
+import { STORE_OWNER_EMAIL } from '../services/notificationService';
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
+  onOpenOwnerPortal?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenOwnerPortal }) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -147,6 +149,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li>
                 <span>Wholesale & Cafe Partner</span>
               </li>
+              {onOpenOwnerPortal && (
+                <li className="pt-2">
+                  <button
+                    type="button"
+                    onClick={onOpenOwnerPortal}
+                    className="text-[#D97706] hover:text-[#FAF7F2] transition-colors cursor-pointer flex items-center gap-1.5 font-semibold text-[11px]"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#8B1E13]" />
+                    <span>Kitchen Orders Portal</span>
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 

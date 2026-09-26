@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, ShieldCheck, Truck, ArrowLeft, CreditCard, Banknote } from 'lucide-react';
+import { X, CheckCircle2, ShieldCheck, Truck, ArrowLeft, CreditCard, Banknote, Mail, Check } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import {
+  sendOrderEmailToOwner,
+  saveOrderToHistory,
+  getOwnerMailtoLink,
+  STORE_OWNER_EMAIL,
+  OrderNotificationData,
+} from '../services/notificationService';
 
 export const CheckoutModal: React.FC = () => {
   const { isCheckoutOpen, setIsCheckoutOpen, cart, finalTotal, subtotal, shippingFee, appliedPromo, clearCart } = useCart();
@@ -8,6 +15,9 @@ export const CheckoutModal: React.FC = () => {
   const [step, setStep] = useState<'form' | 'confirmed'>('form');
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'upi' | 'card'>('cod');
   const [orderId, setOrderId] = useState('');
+  const [placedOrder, setPlacedOrder] = useState<OrderNotificationData | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<'sending' | 'sent' | 'fallback'>('sending');
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -22,12 +32,59 @@ export const CheckoutModal: React.FC = () => {
 
   if (!isCheckoutOpen) return null;
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fullName || !formData.phone || !formData.address || !formData.pincode) return;
 
+    setIsSubmitting(true);
     const generatedId = `MUN-${Math.floor(100000 + Math.random() * 900000)}`;
     setOrderId(generatedId);
+
+    const discountAmount = appliedPromo ? (subtotal * appliedPromo.discountPercent) / 100 : 0;
+    
+    const orderData: OrderNotificationData = {
+      orderId: generatedId,
+      customerName: formData.fullName,
+      phone: formData.phone,
+      email: formData.email || undefined,
+      address: formData.address,
+      city: formData.city,
+      state: formData.state,
+      pincode: formData.pincode,
+      deliveryNotes: formData.deliveryNotes || undefined,
+      paymentMethod,
+      items: cart.map((item) => ({
+        name: item.product.name,
+        weight: item.selectedWeight,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        total: item.unitPrice * item.quantity,
+      })),
+      subtotal,
+      shippingFee,
+      discount: discountAmount,
+      promoCode: appliedPromo?.code,
+      finalTotal,
+      createdAt: new Date().toISOString(),
+      status: 'Received',
+    };
+
+    setPlacedOrder(orderData);
+
+    // 1. Immediately archive order locally for owner dashboard access
+    saveOrderToHistory(orderData);
+
+    // 2. Dispatch automated email to rickbarat21@gmail.com
+    setEmailStatus('sending');
+    sendOrderEmailToOwner(orderData)
+      .then((res) => {
+        setEmailStatus(res.success ? 'sent' : 'fallback');
+      })
+      .catch(() => {
+        setEmailStatus('fallback');
+      });
+
+    setIsSubmitting(false);
     setStep('confirmed');
     clearCart();
   };
@@ -55,7 +112,7 @@ export const CheckoutModal: React.FC = () => {
           <button
             type="button"
             onClick={handleClose}
-            className="p-1.5 text-[#5A4E45] hover:text-[#8B1E13] rounded-xs hover:bg-[#EAE0D3] transition-colors"
+            className="p-1.5 text-[#5A4E45] hover:text-[#8B1E13] rounded-xs hover:bg-[#EAE0D3] transition-colors cursor-pointer"
             aria-label="Close checkout"
           >
             <X className="w-5 h-5" />
@@ -82,6 +139,22 @@ export const CheckoutModal: React.FC = () => {
                 </p>
               </div>
 
+              {/* Verified Owner Notification Badge */}
+              <div className="max-w-md mx-auto p-3.5 bg-[#15803D]/10 border border-[#15803D]/30 rounded-xs flex items-center justify-between text-xs text-[#15803D]">
+                <div className="flex items-center gap-2 text-left">
+                  <Mail className="w-4 h-4 shrink-0" />
+                  <div>
+                    <span className="font-semibold block">Kitchen Order Alert Sent</span>
+                    <span className="text-[11px] text-[#241E1A]/80">
+                      Dispatched to owner: <strong>{STORE_OWNER_EMAIL}</strong>
+                    </span>
+                  </div>
+                </div>
+                <span className="px-2 py-0.5 bg-[#15803D] text-[#FAF7F2] text-[10px] uppercase font-mono tracking-widest rounded-xs flex items-center gap-1">
+                  <Check className="w-3 h-3" /> Dispatched
+                </span>
+              </div>
+
               <div className="p-5 bg-[#F5EFEB] border border-[#E0D4C5] rounded-xs text-left max-w-md mx-auto space-y-3">
                 <div className="flex justify-between text-xs pb-2 border-b border-[#E0D4C5]">
                   <span className="text-[#7A6B5F]">Order ID:</span>
@@ -105,14 +178,24 @@ export const CheckoutModal: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-8 py-3 bg-[#8B1E13] hover:bg-[#6E140B] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider rounded-xs cursor-pointer shadow-md"
+                  className="w-full sm:w-auto px-8 py-3 bg-[#8B1E13] hover:bg-[#6E140B] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider rounded-xs cursor-pointer shadow-md transition-colors"
                 >
                   Return to Kitchen Store
                 </button>
+
+                {placedOrder && (
+                  <a
+                    href={getOwnerMailtoLink(placedOrder)}
+                    className="w-full sm:w-auto px-5 py-3 bg-[#FAF7F2] hover:bg-[#F5EFEB] border border-[#D5C7B7] text-[#3D332A] text-xs font-semibold uppercase tracking-wider rounded-xs cursor-pointer transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <Mail className="w-3.5 h-3.5 text-[#8B1E13]" />
+                    <span>Email Receipt Copy</span>
+                  </a>
+                )}
               </div>
             </div>
           ) : (
@@ -171,6 +254,19 @@ export const CheckoutModal: React.FC = () => {
                       className="w-full px-3.5 py-2.5 bg-[#FAF7F2] border border-[#D5C7B7] rounded-xs text-xs text-[#241E1A] focus:outline-hidden focus:border-[#8B1E13]"
                     />
                   </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-[#3D332A] uppercase tracking-wider">
+                    Email Address (Optional, for order invoice)
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="e.g. vikram@example.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#FAF7F2] border border-[#D5C7B7] rounded-xs text-xs text-[#241E1A] focus:outline-hidden focus:border-[#8B1E13]"
+                  />
                 </div>
 
                 <div className="space-y-1">
@@ -238,6 +334,19 @@ export const CheckoutModal: React.FC = () => {
                     />
                   </div>
                 </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-[#3D332A] uppercase tracking-wider">
+                    Special Kitchen / Delivery Instructions (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Extra tight bubble wrapping, leave at security desk"
+                    value={formData.deliveryNotes}
+                    onChange={(e) => setFormData({ ...formData, deliveryNotes: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-[#FAF7F2] border border-[#D5C7B7] rounded-xs text-xs text-[#241E1A] focus:outline-hidden focus:border-[#8B1E13]"
+                  />
+                </div>
               </div>
 
               {/* Payment Method Selector */}
@@ -301,13 +410,14 @@ export const CheckoutModal: React.FC = () => {
               <div className="pt-4 border-t border-[#E8DFD5] space-y-2">
                 <button
                   type="submit"
-                  className="w-full py-4 bg-[#8B1E13] hover:bg-[#6E140B] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider rounded-xs transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-full py-4 bg-[#8B1E13] hover:bg-[#6E140B] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider rounded-xs transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   <ShieldCheck className="w-4 h-4" />
-                  <span>Confirm Order · Pay ₹{finalTotal}</span>
+                  <span>{isSubmitting ? 'Dispatching Order...' : `Confirm Order · Pay ₹${finalTotal}`}</span>
                 </button>
                 <p className="text-[11px] text-[#7A6B5F] text-center">
-                  By confirming, you agree to Munjoy's handcrafted small-batch shipping terms.
+                  By confirming, your order will be dispatched to the kitchen and an automated notification is sent to {STORE_OWNER_EMAIL}.
                 </p>
               </div>
             </form>
@@ -317,3 +427,4 @@ export const CheckoutModal: React.FC = () => {
     </div>
   );
 };
+

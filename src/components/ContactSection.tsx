@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, MessageSquare } from 'lucide-react';
+import { sendContactMessageToOwner, STORE_OWNER_EMAIL } from '../services/notificationService';
 
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -10,10 +11,21 @@ export const ContactSection: React.FC = () => {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
+    
+    setIsSending(true);
+    await sendContactMessageToOwner({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      subject: formData.subject,
+      message: formData.message,
+    });
+    setIsSending(false);
     setSubmitted(true);
   };
 
@@ -182,14 +194,15 @@ export const ContactSection: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-4 bg-[#8B1E13] hover:bg-[#6E140B] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider rounded-xs transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={isSending}
+                  className="w-full py-4 bg-[#8B1E13] hover:bg-[#6E140B] text-[#FAF7F2] text-xs font-semibold uppercase tracking-wider rounded-xs transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Send Message</span>
+                  <span>{isSending ? 'Sending to Kitchen...' : 'Send Message to Kitchen'}</span>
                 </button>
 
                 <p className="text-[11px] text-[#7A6B5F] text-center">
-                  We respect your privacy. No promotional spam, ever.
+                  Direct dispatch to kitchen inbox at {STORE_OWNER_EMAIL}. No promotional spam, ever.
                 </p>
               </form>
             )}
