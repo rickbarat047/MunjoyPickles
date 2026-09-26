@@ -1,9 +1,16 @@
 /**
  * Munjoy Order & Contact Notification Service
  * Dispatches automated order details and inquiry emails to rickbarat21@gmail.com
+ * Powered by EmailJS (@emailjs/browser) with zero-config automated webhook delivery
  */
 
+import emailjs from '@emailjs/browser';
+
 export const STORE_OWNER_EMAIL = 'rickbarat21@gmail.com';
+
+const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
+const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
 
 export interface OrderItemSummary {
   name: string;
@@ -35,11 +42,12 @@ export interface OrderNotificationData {
 }
 
 /**
- * Dispatches an automated email to rickbarat21@gmail.com via FormSubmit AJAX API
+ * Triggers an automated order email to rickbarat21@gmail.com
+ * Uses EmailJS when credentials are provided, alongside direct automated delivery.
  */
 export async function sendOrderEmailToOwner(
   order: OrderNotificationData
-): Promise<{ success: boolean; message: string }> {
+): Promise<{ success: boolean; message: string; method?: string }> {
   // Format items nicely for the email body
   const formattedItems = order.items
     .map(
@@ -48,27 +56,73 @@ export async function sendOrderEmailToOwner(
     )
     .join('\n');
 
+  const orderDateString = new Date(order.createdAt).toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    dateStyle: 'full',
+    timeStyle: 'medium',
+  });
+
+  const paymentLabel =
+    order.paymentMethod === 'cod'
+      ? 'Cash on Delivery (COD)'
+      : order.paymentMethod === 'upi'
+      ? 'Instant UPI / QR Code'
+      : 'Credit / Debit Card';
+
+  // 1. Attempt EmailJS dispatch if credentials exist
+  if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
+    try {
+      const emailJsParams = {
+        to_email: STORE_OWNER_EMAIL,
+        recipient_email: STORE_OWNER_EMAIL,
+        order_id: order.orderId,
+        customer_name: order.customerName,
+        customer_phone: order.phone,
+        customer_email: order.email || 'None provided',
+        shipping_address: `${order.address}, ${order.city}, ${order.state} - ${order.pincode}`,
+        payment_method: paymentLabel,
+        items_summary: formattedItems,
+        items_count: order.items.length,
+        subtotal: `₹${order.subtotal}`,
+        shipping_fee: order.shippingFee === 0 ? 'FREE' : `₹${order.shippingFee}`,
+        discount: order.discount > 0 ? `₹${order.discount} (${order.promoCode})` : 'None',
+        total_amount: `₹${order.finalTotal}`,
+        delivery_notes: order.deliveryNotes || 'None',
+        order_date: orderDateString,
+      };
+
+      const emailjsResult = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        emailJsParams,
+        EMAILJS_PUBLIC_KEY
+      );
+
+      if (emailjsResult.status === 200) {
+        return {
+          success: true,
+          method: 'EmailJS',
+          message: `Order notification delivered to ${STORE_OWNER_EMAIL} via EmailJS.`,
+        };
+      }
+    } catch (err) {
+      console.warn('EmailJS attempt encountered an issue, falling back to secondary dispatch:', err);
+    }
+  }
+
+  // 2. Direct Automated Dispatch via FormSubmit endpoint (guaranteed zero-config delivery)
   const payload = {
     _subject: `🌶️ NEW MUNJOY ORDER #${order.orderId} · ₹${order.finalTotal} from ${order.customerName}`,
     _template: 'table',
     _captcha: 'false',
     _replyto: order.email || STORE_OWNER_EMAIL,
     'Order ID': order.orderId,
-    'Date & Time (IST)': new Date(order.createdAt).toLocaleString('en-IN', {
-      timeZone: 'Asia/Kolkata',
-      dateStyle: 'full',
-      timeStyle: 'medium',
-    }),
+    'Date & Time (IST)': orderDateString,
     'Customer Full Name': order.customerName,
     'Customer Phone': order.phone,
     'Customer Email': order.email || 'None provided',
     'Delivery Address': `${order.address}, ${order.city}, ${order.state} - ${order.pincode}`,
-    'Payment Method':
-      order.paymentMethod === 'cod'
-        ? 'Cash on Delivery (COD)'
-        : order.paymentMethod === 'upi'
-        ? 'Instant UPI / QR Code'
-        : 'Credit / Debit Card',
+    'Payment Method': paymentLabel,
     'Items Ordered': formattedItems,
     'Items Subtotal': `₹${order.subtotal}`,
     'Shipping Fee': order.shippingFee === 0 ? 'FREE (Special Offer)' : `₹${order.shippingFee}`,
@@ -89,7 +143,11 @@ export async function sendOrderEmailToOwner(
 
     if (response.ok) {
       const data = await response.json();
-      return { success: true, message: data.message || 'Email sent successfully to owner.' };
+      return {
+        success: true,
+        method: 'Direct FormSubmit',
+        message: data.message || `Order notification delivered to ${STORE_OWNER_EMAIL}.`,
+      };
     } else {
       return { success: false, message: 'Server responded with error status.' };
     }
@@ -180,6 +238,27 @@ export async function sendContactMessageToOwner(contact: {
   subject: string;
   message: string;
 }): Promise<{ success: boolean; message?: string }> {
+  // If EmailJS is configured, trigger it
+  if (EMAILJS_SERVICE_ID && EMAILJS_PUBLIC_KEY) {
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID || 'template_contact',
+        {
+          to_email: STORE_OWNER_EMAIL,
+          from_name: contact.name,
+          from_email: contact.email,
+          phone: contact.phone || 'N/A',
+          subject: contact.subject,
+          message: contact.message,
+        },
+        EMAILJS_PUBLIC_KEY
+      );
+    } catch {
+      // Continue to fallback dispatch
+    }
+  }
+
   const payload = {
     _subject: `💬 MUNJOY INQUIRY: ${contact.subject} from ${contact.name}`,
     _template: 'table',
